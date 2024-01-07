@@ -1,3 +1,5 @@
+#include "linux_copy.hpp"
+
 #include <ctime>
 #include <fstream>
 #include <map>
@@ -19,6 +21,7 @@ private:
 public:
   backer(const std::string &metafilepath) { this->metafilepath = metafilepath; }
 
+#ifdef backer
   bool copyfile(const std::string &sourcePath,
                 const std::string &destinationPath) {
     std::ifstream sourceFile(sourcePath, std::ios::binary);
@@ -51,14 +54,14 @@ public:
     }
     return copyfile(path, des_path);
   }
+
+#endif
 };
 
 int main() {
 
-  backer b("./testcases/metafile.txt");
-  std::string sourcePath = "./testcases/source.txt";
-  std::string destinationPath = "./testcases/destination.txt";
-  b.copyfile(sourcePath, destinationPath);
-
+  std::string source_string = "./testcases/1";
+  std::string destination_string = "./testcases/t1";
+  copy_directory(source_string, destination_string);
   return 0;
 }

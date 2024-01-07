@@ -6,6 +6,7 @@ project(BcupSys)
 # add the executable
 
 file(GLOB_RECURSE DIR_SRC "src/*.cpp")
+file(GLOB_RECURSE HDR_SRC "src/*.hpp")
 include_directories(src)
 
 add_compile_options(-g3 -std=c++20 -Wall)
