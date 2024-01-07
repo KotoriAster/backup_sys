@@ -10,11 +10,11 @@
 void file_backuper::copy_file(const std::string &source,
                               const std::string &destination) {
   struct stat st;
-  if (stat(source.c_str(), &st) != 0) {
+  if (lstat(source.c_str(), &st) != 0) {
     std::cerr << "Error stating file\n";
     return;
   }
-  /*
+
   if (S_ISLNK(st.st_mode)) {
     // This is a symbolic link, so copy it as is
     char buffer[8192];
@@ -24,11 +24,18 @@ void file_backuper::copy_file(const std::string &source,
       return;
     }
     buffer[bytes] = '\0';
-    std::string s_buffer = buffer;
     symlink(buffer, destination.c_str());
     return;
   }
-  */
+
+  if (S_ISFIFO(st.st_mode)) {
+    // This is a named pipe, so create a new named pipe at the destination
+    if (mkfifo(destination.c_str(), st.st_mode) == -1) {
+      std::cerr << "Error creating named pipe\n";
+      return;
+    }
+    return;
+  }
 
   auto it = ctx.copied_inodes.find(st.st_ino);
   if (it != ctx.copied_inodes.end()) {
