@@ -9,7 +9,7 @@ file(GLOB_RECURSE DIR_SRC "src/*.cpp")
 file(GLOB_RECURSE HDR_SRC "src/*.hpp")
 include_directories(src)
 
-add_compile_options(-g3 -std=c++20 -Wall)
+add_compile_options(-g3 -std=c++17 -Wall)
 
 add_executable(BcupSys ${DIR_SRC})
 

@@ -7,6 +7,7 @@
 #include <string>
 #include <vector>
 
+#ifdef backer
 class backer {
 
   struct fileinfo {
@@ -21,7 +22,6 @@ private:
 public:
   backer(const std::string &metafilepath) { this->metafilepath = metafilepath; }
 
-#ifdef backer
   bool copyfile(const std::string &sourcePath,
                 const std::string &destinationPath) {
     std::ifstream sourceFile(sourcePath, std::ios::binary);
@@ -54,14 +54,15 @@ public:
     }
     return copyfile(path, des_path);
   }
-
-#endif
 };
+#endif
 
 int main() {
 
   std::string source_string = "./testcases/1";
   std::string destination_string = "./testcases/t1";
-  copy_directory(source_string, destination_string);
+  file_filter filter{2048, reg_file};
+  file_backuper fb1 = file_backuper();
+  fb1.copy_directory(source_string, destination_string, filter);
   return 0;
 }
