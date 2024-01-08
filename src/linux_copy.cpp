@@ -113,7 +113,11 @@ void file_backuper::copy_directory(const std::string &source,
         if (!para_filter.filter(source_file)) {
           continue;
         }
-        copy_file(source_file, destination_file);
+        if (!fb_compressor.filter(entry->d_name))
+          copy_file(source_file, destination_file);
+        else
+          fb_compressor.cl_compress_file(source_file,
+                                         destination_file + ".lz77");
       }
     }
     closedir(dir);

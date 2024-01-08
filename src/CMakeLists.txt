@@ -1,4 +1,4 @@
 include_directories(${CMAKE_SOURCE_DIR}/include ${CMAKE_SOURCE_DIR}/src)
 
-set(LIB_BCUPSYS_IMPL linux_copy.cpp  )
+set(LIB_BCUPSYS_IMPL linux_copy.cpp  LZ77.cpp)
 add_library(bcimpl STATIC ${LIB_BCUPSYS_IMPL})

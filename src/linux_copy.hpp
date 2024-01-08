@@ -1,5 +1,6 @@
 #pragma once
 
+#include "LZ77.hpp"
 #include <limits.h>
 #include <map>
 #include <regex>
@@ -70,8 +71,11 @@ private:
     std::map<ino_t, std::string> copied_inodes;
     std::map<std::string, std::string> copied_files;
   } ctx;
+  compressor_lz77 fb_compressor;
 
 public:
+  file_backuper() {}
+  file_backuper(compressor_lz77 compressor) : fb_compressor(compressor) {}
   void copy_file(const std::string &source, const std::string &destination);
   void copy_directory(const std::string &source, const std::string &destination,
                       const file_filter &para_filter);
