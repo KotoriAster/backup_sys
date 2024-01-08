@@ -1,3 +1,13 @@
+////
+// @file test.cc
+// @brief
+// 采用catch2作为单元测试方案，需要一个main函数，这里定义。
+//
+// @author niexw
+// @email xiaowen.nie.cn@gmail.com
+//
+#define CATCH_CONFIG_MAIN
+#include "catch_amalgamated.hpp"
 #include "linux_copy.hpp"
 
 #include <ctime>
@@ -8,7 +18,13 @@
 #include <string>
 #include <vector>
 
-int main() {
+int theAnswer() { return 6 * 9; }
+
+TEST_CASE("Life, the universe and everything", "[42][theAnswer]") {
+  REQUIRE(theAnswer() == 42);
+}
+
+TEST_CASE("") {
 
   std::string source_string = "./testcases/1";
   std::string destination_string = "./testcases/t1";
@@ -24,5 +40,4 @@ int main() {
                      {mktime(&start_time), mktime(&end_time)}};
   file_backuper fb1 = file_backuper();
   fb1.copy_directory(source_string, destination_string, filter);
-  return 0;
 }

@@ -2,6 +2,7 @@
 
 #include <limits.h>
 #include <map>
+#include <regex>
 #include <string>
 #include <sys/stat.h>
 
@@ -17,6 +18,7 @@ struct file_filter {
 
   int file_size_limit;
   int file_type_limit = all_file;
+  std::regex name_pattern;
   struct file_time_bound {
     time_t start_time = 0;
     time_t end_time = LONG_MAX;
@@ -34,6 +36,9 @@ struct file_filter {
 
     if (st.st_mtime < file_time_limit.start_time ||
         st.st_mtime > file_time_limit.end_time)
+      return false;
+
+    if (!std::regex_match(filepath, name_pattern))
       return false;
 
     if (file_type_limit & reg_file && S_ISREG(st.st_mode))
