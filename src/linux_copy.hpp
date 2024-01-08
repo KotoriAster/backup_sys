@@ -16,7 +16,7 @@
 
 struct file_filter {
 
-  int file_size_limit;
+  __off_t file_size_limit;
   int file_type_limit = all_file;
   std::regex name_pattern;
   struct file_time_bound {

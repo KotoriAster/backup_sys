@@ -1,10 +1,13 @@
 #include "linux_copy.hpp"
+#include "LZ77.hpp"
 #include <dirent.h>
 #include <fcntl.h>
 #include <iostream>
 #include <map>
 #include <string>
 #include <sys/stat.h>
+#include <sys/time.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 void file_backuper::copy_file(const std::string &source,
@@ -63,6 +66,21 @@ void file_backuper::copy_file(const std::string &source,
     close(source_fd);
     close(dest_fd);
 
+    // Preserve permissions
+    if (chmod(destination.c_str(), st.st_mode) == -1) {
+      std::cerr << "Error setting permissions\n";
+    }
+
+    // Preserve timestamps
+    struct timeval times[2] = {{st.st_atime, 0}, {st.st_mtime, 0}};
+    if (utimes(destination.c_str(), times) == -1) {
+      std::cerr << "Error setting timestamps\n";
+    }
+
+    if (chown(destination.c_str(), st.st_uid, st.st_gid) == -1) {
+      std::cerr << "Error setting owner and group\n";
+    }
+
     ctx.copied_inodes[st.st_ino] = destination;
   }
 }
@@ -77,9 +95,16 @@ void file_backuper::copy_directory(const std::string &source,
       if (entry->d_type == DT_DIR) {
         if (std::string(entry->d_name) != "." &&
             std::string(entry->d_name) != "..") {
+          __mode_t mode = S_IRUSR | S_IWUSR | S_IXUSR;
           std::string new_source = source + "/" + entry->d_name;
           std::string new_destination = destination + "/" + entry->d_name;
-          mkdir(new_destination.c_str(), S_IRUSR | S_IWUSR | S_IXUSR);
+          struct stat st;
+          if (lstat(source.c_str(), &st) == 0) {
+            mode = st.st_mode;
+          } else {
+            std::cerr << "Error stating directory\n";
+          }
+          mkdir(new_destination.c_str(), mode);
           copy_directory(new_source, new_destination, para_filter);
         }
       } else {
