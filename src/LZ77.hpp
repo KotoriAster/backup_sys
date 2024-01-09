@@ -43,7 +43,7 @@ struct compressor_lz77 {
     if (compress) {
       cl_compress_file(in_filename, out_filename + ".lz77");
     } else {
-      if (std::regex_match(out_filename, std::regex(".*.lz77$"))) {
+      if (std::regex_match(out_filename, std::regex(".*\.lz77$"))) {
         std::string out_filename2 =
             out_filename.substr(0, out_filename.size() - 5);
         cl_decompress_file(in_filename, out_filename2);
