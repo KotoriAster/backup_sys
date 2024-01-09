@@ -42,4 +42,13 @@ TEST_CASE("compressor_integration") {
     compressor.cl_decompress_file(destination_string,
                                   "testcases/t2/simpletext");
   }
+
+  SECTION("compressor filter test") {
+    std::string source_string = "testcases/1";
+    std::string destination_string = "testcases/t3";
+
+    compressor_lz77 compressor = {std::regex("^[a-z]+$"), 1 << 10};
+    file_backuper fb3 = file_backuper(compressor);
+    fb3.copy_directory(source_string, destination_string, file_filter());
+  }
 }

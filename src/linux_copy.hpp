@@ -15,11 +15,15 @@
 #define fifo_file 32
 #define all_file 63
 
+const std::map<char, int> flag_map = {{'r', reg_file}, {'d', dir_file},
+                                      {'s', sym_file}, {'b', blk_file},
+                                      {'c', chr_file}, {'f', fifo_file}};
+
 struct file_filter {
 
-  __off_t file_size_limit;
+  __off_t file_size_limit = LONG_MAX;
   int file_type_limit = all_file;
-  std::regex name_pattern;
+  std::regex name_pattern = std::regex(".*");
   struct file_time_bound {
     time_t start_time = 0;
     time_t end_time = LONG_MAX;

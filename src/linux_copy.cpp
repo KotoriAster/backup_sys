@@ -54,7 +54,8 @@ void file_backuper::copy_file(const std::string &source,
         open(destination.c_str(), O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR);
 
     if (source_fd < 0 || dest_fd < 0) {
-      std::cerr << "Error opening file\n";
+      std::cerr << "Error opening file\n"
+                << "source:" << source << " dest:" << destination << "\n";
       return;
     }
 
@@ -116,8 +117,7 @@ void file_backuper::copy_directory(const std::string &source,
         if (!fb_compressor.filter(entry->d_name))
           copy_file(source_file, destination_file);
         else
-          fb_compressor.cl_compress_file(source_file,
-                                         destination_file + ".lz77");
+          fb_compressor.compressor_switch(source_file, destination_file);
       }
     }
     closedir(dir);
